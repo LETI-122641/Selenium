@@ -20,7 +20,7 @@ public class MainPage {
 
     public final By toolsMenu =
             By.cssSelector("[data-test='main-menu-item'][data-test-marker='Developer Tools']");
-
+      
     public final By searchButton =
             By.cssSelector("[data-test='site-header-search-action']");
 
