@@ -13,14 +13,17 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import static com.codeborne.selenide.Condition.value;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
 
 import java.time.Duration;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.value;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.title;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,8 +35,12 @@ public class MainPageTest {
     @BeforeAll
     static void setUpAll() {
         Configuration.browserSize = "1280x800";
-        Configuration.timeout = 30_000;      // 30 s
-        SelenideLogger.addListener("allure", new AllureSelenide());
+        Configuration.timeout = 30_000;      // 30 s timeout para waits explícitos do Selenide
+
+        SelenideLogger.addListener("allure",
+                new AllureSelenide()
+                        .screenshots(true)
+                        .savePageSource(false));
     }
 
     @BeforeEach
@@ -42,16 +49,10 @@ public class MainPageTest {
 
         driver = WebDriverRunner.getWebDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
         mainPage = new MainPage(driver);
 
-        try {
-            WebElement acceptButton =
-                    driver.findElement(By.xpath("//button[contains(., 'Accept')]"));
-            acceptButton.click();
-            System.out.println("Cookies consent accepted.");
-        } catch (Exception e) {
-            System.out.println("No cookie banner found or locator needs adjustment.");
-        }
+        acceptCookiesIfVisible();
     }
 
     @AfterEach
@@ -61,10 +62,12 @@ public class MainPageTest {
 
     @Test
     public void search() {
-        String query = "Selenium";
+        final String query = "Selenium";
 
         // abrir overlay de pesquisa
-        $(mainPage.searchButton).shouldBe(visible).click();
+        $(mainPage.searchButton)
+                .shouldBe(visible)
+                .click();
 
         // apanhar exatamente o input da pesquisa
         SelenideElement searchInput = $("[data-test-id='search-input']")
@@ -88,20 +91,24 @@ public class MainPageTest {
 
         toolsMenu.hover();
 
-        // garantir apenas que há submenus no DOM (sem exigir visibilidade,
-        // porque o site pode ter mudado o comportamento de hover/click)
+        // garantir apenas que há submenus no DOM
         $$("div[data-test='main-submenu']")
                 .shouldHave(sizeGreaterThan(0));
 
         // assert fraco sobre o conteúdo, independente de layout
         String pageSource = WebDriverRunner.getWebDriver().getPageSource();
-        assertTrue(pageSource.contains("IDE") || pageSource.contains("Tools"));
+        assertTrue(
+                pageSource.contains("IDE") || pageSource.contains("Tools"),
+                "Page source should contain at least 'IDE' or 'Tools'"
+        );
     }
 
     @Test
     public void navigationToAllTools() {
         // 1) clicar no card "Developer Tools"
-        $(mainPage.seeDeveloperToolsButton).shouldBe(visible).click();
+        $(mainPage.seeDeveloperToolsButton)
+                .shouldBe(visible)
+                .click();
 
         // 2) o botão [data-test='suggestion-action'] está coberto por outro <a>,
         //    por isso usamos click via JavaScript para evitar ElementClickInterceptedException
@@ -116,5 +123,20 @@ public class MainPageTest {
                 "All Developer Tools and Products by JetBrains",
                 title()
         );
+    }
+
+    /**
+     * Tenta aceitar o banner de cookies, se estiver presente.
+     */
+    private void acceptCookiesIfVisible() {
+        try {
+            WebElement acceptButton = driver.findElement(
+                    By.xpath("//button[contains(., 'Accept')]")
+            );
+            acceptButton.click();
+            System.out.println("Cookie consent banner accepted.");
+        } catch (Exception e) {
+            System.out.println("No cookie banner found or locator needs adjustment.");
+        }
     }
 }
