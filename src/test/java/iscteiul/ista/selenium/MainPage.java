@@ -1,28 +1,52 @@
 package iscteiul.ista.selenium;
 
+import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
 
 // page_url = https://www.jetbrains.com/
 public class MainPage {
-    @FindBy(xpath = "//*[@data-test-marker='Developer Tools']")
-    public WebElement seeDeveloperToolsButton;
 
-    @FindBy(css = "[data-test='suggestion-action-link']")
-    public WebElement findYourToolsButton;
+    private final WebDriver driver;
 
-    @FindBy(xpath = "//div[@data-test='main-menu-item' and @data-test-marker = 'Developer Tools']")
-    public WebElement toolsMenu;
+    // Locators públicos para serem usados nos testes com $(...)
+    public final By seeDeveloperToolsButton =
+            By.cssSelector("[data-test-marker='Developer Tools']");
 
-    @FindBy(css = "[data-test='site-header-search-action']")
-    public WebElement searchButton;
+    public final By findYourToolsButton =
+            By.cssSelector("[data-test='suggestion-action']");
+
+    public final By toolsMenu =
+            By.cssSelector("[data-test='main-menu-item'][data-test-marker='Developer Tools']");
+      
+    public final By searchButton =
+            By.cssSelector("[data-test='site-header-search-action']");
 
     public MainPage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
+        this.driver = driver;
+    }
+
+    public WebDriver getDriver() {
+        return driver;
+    }
+
+    // Métodos de conveniência (se quiseres usar Page Object também em outros testes)
+
+    public SelenideElement seeDeveloperToolsButton() {
+        return $(seeDeveloperToolsButton);
+    }
+
+    public SelenideElement findYourToolsButton() {
+        return $(findYourToolsButton);
+    }
+
+    public SelenideElement toolsMenu() {
+        return $(toolsMenu);
+    }
+
+    public SelenideElement searchButton() {
+        return $(searchButton);
     }
 }
