@@ -82,6 +82,7 @@ public class MainPageTest {
         // não carregar em Enter, não validar URL nem body
     }
 
+
     @Test
     public void toolsMenu() {
         // usar o elemento do PageObject e provocar hover
