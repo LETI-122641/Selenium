@@ -1,4 +1,4 @@
-package pages;
+package Add_Product;
 
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.Condition;
