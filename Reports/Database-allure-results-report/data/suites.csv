@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3111","openDetails_shouldShowSameTitleAndNonEmptyDescription()","","2025-12-04","passed","2025-12-04","","DataBase.DataBasePageTest","DataBase.DataBasePageTest","openDetails_shouldShowSameTitleAndNonEmptyDescription"
+"","3399","firstMovie_shouldMatchExpectedDataAndOpenImdb()","","2025-12-04","passed","2025-12-04","","DataBase.DataBasePageTest","DataBase.DataBasePageTest","firstMovie_shouldMatchExpectedDataAndOpenImdb"
+"","2685","filterByExistingTitle_shouldKeepMovieInGrid()","","2025-12-04","passed","2025-12-04","","DataBase.DataBasePageTest","DataBase.DataBasePageTest","filterByExistingTitle_shouldKeepMovieInGrid"
+"","4187","firstMovie_imdbLinkShouldOpenInNewTab()","","2025-12-04","passed","2025-12-04","","DataBase.DataBasePageTest","DataBase.DataBasePageTest","firstMovie_imdbLinkShouldOpenInNewTab"
